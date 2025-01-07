@@ -1,5 +1,6 @@
+import { MedicalExam } from "src/medical-exams/entities/medical-exam.entity";
 import { Partner } from "src/partners/entities/partner.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { BeforeInsert, Column, Entity, ManyToOne, DataSource } from "typeorm";
 
 @Entity()
 export class TheoristExam {
