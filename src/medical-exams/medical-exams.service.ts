@@ -19,7 +19,8 @@ export class MedicalExamsService {
   async create(createMedicalExamDto: CreateMedicalExamDto) {
     const partner = await this.checkExistPartner(createMedicalExamDto.partner_Name);
 
-    this.checkUnapprovedMedicalExam(createMedicalExamDto.examinee_Id);
+    await this.checkUnapprovedMedicalExam(createMedicalExamDto.examinee_Id);
+    await this.checkMedicalExamByDate(createMedicalExamDto.examinee_Id, createMedicalExamDto.date);
 
     return await this.medicalExamRepository.save({
       examinee_Id: createMedicalExamDto.examinee_Id,
@@ -47,6 +48,8 @@ export class MedicalExamsService {
     return await this.medicalExamRepository.delete({id});
   }
 
+  //Comprobaciones
+
   async checkUnapprovedMedicalExam(examinee_Id: string) {
     const medicalExam = await this.medicalExamRepository.findOne({
       where: {
@@ -57,6 +60,19 @@ export class MedicalExamsService {
 
     if (medicalExam) {
     throw new BadRequestException("You have an unapproved medical exam, you can't drive");
+    }
+  }
+
+  async checkMedicalExamByDate(examinee_Id: string, date: string) {
+    const medicalExam = await this.medicalExamRepository.findOne({
+      where: {
+        examinee_Id: examinee_Id,
+        date: new Date(date),
+      },
+    });
+
+    if (medicalExam) {
+      throw new BadRequestException("A medical exam has already been added on this date");
     }
   }
 

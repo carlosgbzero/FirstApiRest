@@ -12,6 +12,14 @@ import { TheoristExamsModule } from './theorist-exams/theorist-exams.module';
 import { TheoristExam } from './theorist-exams/entities/theorist-exam.entity';
 import { PracticalExamsModule } from './practical-exams/practical-exams.module';
 import { PracticalExam } from './practical-exams/entities/practical-exam.entity';
+import { LicensesModule } from './licenses/licenses.module';
+import { License } from './licenses/entities/license.entity';
+import { LicenseCategoriesModule } from './license-categories/license-categories.module';
+import { AllCategoriesModule } from './all-categories/all-categories.module';
+import { InfractionsModule } from './infractions/infractions.module';
+import { LicenseCategory } from './license-categories/entities/license-category.entity';
+import { Infraction } from './infractions/entities/infraction.entity';
+import { AllCategory } from './all-categories/entities/all-category.entity';
 
 @Module({
   imports: [
@@ -22,7 +30,8 @@ import { PracticalExam } from './practical-exams/entities/practical-exam.entity'
       username : "postgres",  // your username
       password : "elephant", // your password
       database : "SisGL",  // your database name. Create a new one 
-      entities : [Center, Partner, Driver, MedicalExam, TheoristExam, PracticalExam],
+      entities : [Center, Partner, Driver, MedicalExam, TheoristExam, PracticalExam,
+        License, LicenseCategory,Infraction,AllCategory], // add all entities here
       synchronize : true,
     }),
     CentersModule,
@@ -31,6 +40,10 @@ import { PracticalExam } from './practical-exams/entities/practical-exam.entity'
     MedicalExamsModule,
     TheoristExamsModule,
     PracticalExamsModule,
+    LicensesModule,
+    LicenseCategoriesModule,
+    AllCategoriesModule,
+    InfractionsModule,
   ],
   controllers: [],
   providers: [],

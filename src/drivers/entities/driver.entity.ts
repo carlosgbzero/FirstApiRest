@@ -1,5 +1,6 @@
 import { Center } from "src/centers/entities/center.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { License } from "src/licenses/entities/license.entity";
+import { Column, Entity, ManyToOne, OneToOne } from "typeorm";
 
 @Entity()
 export class Driver {
@@ -26,4 +27,6 @@ export class Driver {
     @Column({nullable:true})
     email? : string
 
+    @OneToOne(()=>License, license => license.driver)
+    license : License
 }

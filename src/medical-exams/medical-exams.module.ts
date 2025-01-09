@@ -9,6 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([MedicalExam, Partner])],
   controllers: [MedicalExamsController],
   providers: [MedicalExamsService],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule], // Asegúrate de exportar TypeOrmModule
 })
 export class MedicalExamsModule {}

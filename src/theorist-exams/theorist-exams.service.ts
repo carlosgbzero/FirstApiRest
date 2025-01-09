@@ -23,6 +23,7 @@ export class TheoristExamsService {
      const partner = await this.checkExistPartner(createTheoristExamDto.partner_Name);
 
      await this.checkApprovedMedicalExam(createTheoristExamDto.examinee_Id);
+     await this.checkTheoristExamByDate(createTheoristExamDto.examinee_Id, createTheoristExamDto.date);
 
      return await this.theoristExamRepository.save({
        examinee_Id: createTheoristExamDto.examinee_Id,
@@ -57,10 +58,26 @@ export class TheoristExamsService {
         examinee_Id: examinee_Id,
         result: true,
       },
+      order: {
+        date : "DESC",
+      }
     });
 
     if (!medicalExam) {
       throw new BadRequestException("No approved medical exam found for the examinee");
+    }
+  }
+
+  async checkTheoristExamByDate(examinee_Id: string, date: string) {
+    const theoristExam = await this.theoristExamRepository.findOne({
+      where: {
+        examinee_Id: examinee_Id,
+        date: new Date(date),
+      },
+    });
+
+    if (theoristExam) {
+      throw new BadRequestException("A theorist exam has already been added on this date");
     }
   }
 

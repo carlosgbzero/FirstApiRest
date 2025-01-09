@@ -50,16 +50,34 @@ export class PracticalExamsService {
     return await this.practicalExamRepository.delete({id});
   }
 
+  //Comprobaciones
+
   async checkApprovedTheoristExam(examinee_Id: string) {
     const theoristExam = await this.theoristExamRepository.findOne({
       where: {
         examinee_Id: examinee_Id,
         result: true,
       },
+      order: {
+        date: "DESC",
+      }
     });
 
     if (!theoristExam) {
     throw new BadRequestException("No approved theorist exam found for the examinee");
+    }
+  }
+
+  async checkPracticalExamByDate(examinee_Id: string, date: string) {
+    const practicalExam = await this.practicalExamRepository.findOne({
+      where: {
+        examinee_Id: examinee_Id,
+        date: new Date(date),
+      },
+    });
+
+    if (practicalExam) {
+      throw new BadRequestException("A practical exam has already been added on this date");
     }
   }
 
