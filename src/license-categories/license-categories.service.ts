@@ -1,26 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLicenseCategoryDto } from './dto/create-license-category.dto';
 import { UpdateLicenseCategoryDto } from './dto/update-license-category.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { LicenseCategory } from './entities/license-category.entity';
+import { Repository } from 'typeorm';
+import { License } from 'src/licenses/entities/license.entity';
+import { AllCategory } from 'src/all-categories/entities/all-category.entity';
 
 @Injectable()
 export class LicenseCategoriesService {
-  create(createLicenseCategoryDto: CreateLicenseCategoryDto) {
-    return 'This action adds a new licenseCategory';
+
+  constructor(
+    @InjectRepository(LicenseCategory)
+    private readonly licenseCategoryRepository : Repository<LicenseCategory>,
+
+    @InjectRepository(License)
+    private readonly licenseRepository : Repository<License>,
+
+    @InjectRepository(AllCategory)
+    private readonly allCategoryRepository : Repository<AllCategory>
+  ){}
+
+  async create(createLicenseCategoryDto: CreateLicenseCategoryDto) {
+    const category = await this.allCategoryRepository.findOne({where:{
+      category : createLicenseCategoryDto.category_name
+    }})
+
+    if(!category)
+      throw new BadRequestException("Category no valid")
+
+    const license = await this.licenseRepository.findOneBy({id : createLicenseCategoryDto.license_id})
+
+    if(!license)
+      throw new BadRequestException("License id no valid")
+
+    return await this.licenseCategoryRepository.save({
+      category : category,
+      license : license
+    }
+    );
   }
 
-  findAll() {
-    return `This action returns all licenseCategories`;
+  async findAll() {
+    return await this.allCategoryRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} licenseCategory`;
+  async findOne(id: number) {
+    return await this.allCategoryRepository.findOneBy({id});
   }
 
-  update(id: number, updateLicenseCategoryDto: UpdateLicenseCategoryDto) {
-    return `This action updates a #${id} licenseCategory`;
+  async update(id: number, updateLicenseCategoryDto: UpdateLicenseCategoryDto) {
+    return `This action updates a #${id} licenseCategory`; //Not necessary
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} licenseCategory`;
+  async remove(id: number) {
+    return await this.allCategoryRepository.delete({id});
   }
 }

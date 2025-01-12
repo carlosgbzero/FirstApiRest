@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateInfractionDto } from './dto/create-infraction.dto';
 import { UpdateInfractionDto } from './dto/update-infraction.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Infraction } from './entities/infraction.entity';
+import { Repository } from 'typeorm';
+import { License } from 'src/licenses/entities/license.entity';
 
 @Injectable()
 export class InfractionsService {
-  create(createInfractionDto: CreateInfractionDto) {
-    return 'This action adds a new infraction';
+
+  constructor(
+    @InjectRepository(Infraction)
+    private readonly infractionRepository : Repository<Infraction>,
+
+    @InjectRepository(License)
+    private readonly licenseRepository : Repository<License>
+  ){}
+
+  async create(createInfractionDto: CreateInfractionDto) {
+    const license = await this.licenseRepository.findOne({
+      where:{
+        driver:{
+          id : createInfractionDto.driver_id
+        }
+      } 
+    })
+
+    if(!license)
+      throw new BadRequestException("Driver license not found")
+
+    return await this.infractionRepository.save({
+      date : new Date(createInfractionDto.infraction_date),
+      description : createInfractionDto.description,
+      severity : createInfractionDto.severity,
+      points : createInfractionDto.points,
+      license : license,
+      status : "Unpaid"
+    });
   }
 
-  findAll() {
-    return `This action returns all infractions`;
+  async findAll() {
+    return await this.infractionRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} infraction`;
+  async findOne(id: number) {
+    return await this.infractionRepository.findOneBy({id});
   }
 
-  update(id: number, updateInfractionDto: UpdateInfractionDto) {
-    return `This action updates a #${id} infraction`;
+  async update(id: number, updateInfractionDto: UpdateInfractionDto) {
+    return await this.infractionRepository.update(id, updateInfractionDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} infraction`;
+  async remove(id: number) {
+    return await this.infractionRepository.delete({id});
   }
 }

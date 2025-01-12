@@ -5,6 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Driver } from './entities/driver.entity';
 import { Repository } from 'typeorm';
 import { Center } from 'src/centers/entities/center.entity';
+import { MedicalExam } from 'src/medical-exams/entities/medical-exam.entity';
+import { TheoristExam } from 'src/theorist-exams/entities/theorist-exam.entity';
+import { PracticalExam } from 'src/practical-exams/entities/practical-exam.entity';
 
 @Injectable()
 export class DriversService {
@@ -14,7 +17,16 @@ export class DriversService {
     private readonly driverRepository : Repository<Driver>,
 
     @InjectRepository(Center)
-    private readonly centerRepository : Repository<Center>
+    private readonly centerRepository : Repository<Center>,
+
+    @InjectRepository(MedicalExam)
+    private readonly medicalExamRepository : Repository<MedicalExam>,
+
+    @InjectRepository(TheoristExam)
+    private readonly theoristExamRepository : Repository<TheoristExam>,
+
+    @InjectRepository(PracticalExam)
+    private readonly practicalExamRepository : Repository<PracticalExam>
   ) { }
 
   async create(createDriverDto: CreateDriverDto) {
@@ -23,6 +35,9 @@ export class DriversService {
     if(!center){
       throw new BadRequestException("Center not found");
     }
+
+    await this.checkExams(createDriverDto.id)
+
     return await this.driverRepository.save({
       id : createDriverDto.id,
       name : createDriverDto.name,
@@ -49,5 +64,43 @@ export class DriversService {
 
   async remove(id: string) {
     return await this.driverRepository.delete({id});
+  }
+
+  async checkExams(id : string){
+    const med = await this.medicalExamRepository.findOne({
+      where: {
+        examinee_Id : id,
+        result : true
+      },
+    order :{
+      date : "DESC"
+    }})
+
+    if(!med)
+      throw new BadRequestException("Approved medical exam not found, cant be a driver")
+
+    const theorist = await this.theoristExamRepository.findOne({
+      where: {
+        examinee_Id : id,
+        result : true
+      },
+    order :{
+      date : "DESC"
+    }})
+
+    if(!theorist)
+      throw new BadRequestException("Approved theorist exam not found, cant be a driver")
+
+    const practical = await this.practicalExamRepository.findOne({
+      where: {
+        examinee_Id : id,
+        result : true
+      },
+    order :{
+      date : "DESC"
+    }})
+
+    if(!practical)
+      throw new BadRequestException("Approved practical exam not found, cant be a driver")
   }
 }
