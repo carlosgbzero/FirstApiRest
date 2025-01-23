@@ -29,6 +29,7 @@ export class InfractionsService {
     if(!license)
       throw new BadRequestException("Driver license not found")
 
+    
     return await this.infractionRepository.save({
       date : new Date(createInfractionDto.infraction_date),
       description : createInfractionDto.description,

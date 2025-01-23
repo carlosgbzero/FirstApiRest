@@ -8,7 +8,7 @@ export class AllCategory {
     id : number
 
     @Column()
-    category : string
+    name : string
 
     @Column()
     vehicle : string

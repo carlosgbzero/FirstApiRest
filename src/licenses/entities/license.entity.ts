@@ -8,7 +8,7 @@ export class License {
     @Column({primary: true, generated: true})
     id: number;
 
-    @OneToOne(()=>Driver, driver => driver.license)
+    @OneToOne(()=>Driver, driver => driver.license, {eager:true})
     @JoinColumn({name: "driver_id"})
     driver: Driver;
 
@@ -27,7 +27,7 @@ export class License {
     @Column()
     points: number;
 
-    @OneToMany(()=>LicenseCategory, licenseCategory => licenseCategory.license)
+    @OneToMany(()=>LicenseCategory, licenseCategory => licenseCategory.license, {eager:true})
     categories : LicenseCategory[];
 
     @OneToMany(()=>Infraction, infraction => infraction.license)

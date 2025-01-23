@@ -1,5 +1,5 @@
 import { License } from "src/licenses/entities/license.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity()
 export class Infraction {
@@ -22,7 +22,8 @@ export class Infraction {
     @Column()
     status : string;
 
-    @ManyToOne(()=>License, license => license.infractions)
+    @ManyToOne(()=>License, license => license.infractions, {eager : true})
+    @JoinColumn({name: "license"})
     license : License;
 
 }

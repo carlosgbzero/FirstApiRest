@@ -8,8 +8,7 @@ export class Driver {
     @Column({primary:true})
     id : string
 
-    @ManyToOne(()=>Center,(center)=>center.drivers,
-    {eager:true})
+    @ManyToOne(()=>Center,(center)=>center.drivers)
     center : Center
 
     @Column()

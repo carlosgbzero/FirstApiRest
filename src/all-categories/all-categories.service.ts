@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAllCategoryDto } from './dto/create-all-category.dto';
-import { UpdateAllCategoryDto } from './dto/update-all-category.dto';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AllCategory } from './entities/all-category.entity';
+import { UpdateAllCategoryDto } from './dto/update-all-category.dto';
 
 @Injectable()
 export class AllCategoriesService {
@@ -26,9 +27,10 @@ export class AllCategoriesService {
     return await this.allCategoryRepository.findOneBy({id});
   }
 
-  async update(id: number, updateAllCategoryDto: UpdateAllCategoryDto) {
-    return `This action updates a #${id} allCategory`; // Not necessary
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async update(id: number, updateAllCategoryDto : UpdateAllCategoryDto) {
+      return 
+    }
 
   async remove(id: number) {
     return await this.allCategoryRepository.delete({id});

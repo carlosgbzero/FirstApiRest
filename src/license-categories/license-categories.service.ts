@@ -23,7 +23,7 @@ export class LicenseCategoriesService {
 
   async create(createLicenseCategoryDto: CreateLicenseCategoryDto) {
     const category = await this.allCategoryRepository.findOne({where:{
-      category : createLicenseCategoryDto.category_name
+      name : createLicenseCategoryDto.category_name
     }})
 
     if(!category)

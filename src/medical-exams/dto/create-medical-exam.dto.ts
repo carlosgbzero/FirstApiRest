@@ -1,4 +1,4 @@
-import { IsBoolean, IsISO8601, IsString } from "class-validator";
+import { IsBoolean , IsDateString, IsString } from "class-validator";
 
 export class CreateMedicalExamDto {
     @IsString()
@@ -10,7 +10,7 @@ export class CreateMedicalExamDto {
     @IsString()
     examiner_Name : string;
     
-    @IsISO8601()
+    @IsDateString()
     date: string;
     
     @IsBoolean()

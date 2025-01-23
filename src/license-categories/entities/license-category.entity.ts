@@ -11,7 +11,7 @@ export class LicenseCategory {
     @ManyToOne(()=>License, license => license.categories)
     license : License
 
-    @OneToOne(()=>AllCategory, allCategory => allCategory.category, 
+    @OneToOne(()=>AllCategory, allCategory => allCategory.id, 
     {eager : true})
     @JoinColumn({name : "category_Id"})
     category : AllCategory

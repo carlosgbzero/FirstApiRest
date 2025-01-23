@@ -3,7 +3,7 @@ import { IsString } from "class-validator"
 export class CreateAllCategoryDto {
 
     @IsString()
-    category : string
+    name : string
     @IsString()
     vehicle : string
 
